@@ -2,10 +2,8 @@ import os
 import time
 import string
 import pickle
-import re
+import regex as re
 import xml.etree.ElementTree as ET
-
-# import random
 
 from pathlib import Path
 
@@ -59,7 +57,9 @@ class NLTKPreprocessor(BaseEstimator, TransformerMixin):
         """
         self.lower      = lower
         self.strip      = strip
+        self.stopwords  = set(stopwords) if stopwords else set(sw.words('english'))
         self.stopwords.difference_update(excluded_stop_words)
+
         self.punct      = set(punct) if punct else set(string.punctuation)
         self.lemmatizer = WordNetLemmatizer()
 
@@ -167,7 +167,7 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 
     # Begin evaluation
     if verbose: print("Building for evaluation")
-    X_train, X_test, y_train, y_test = tts(X, y, test_size=0.2)
+    X_train, X_test, y_train, y_test = tts(X, y, test_size=0.2, stratify=y)
     model, secs = build(classifier, X_train, y_train)
 
     if verbose: print("Evaluation model fit in {:0.3f} seconds".format(secs))
@@ -247,7 +247,7 @@ def show_most_informative_features(model, text=None, n=20):
 if __name__ == "__main__":
 
     IMAGE_STR = 'data:image'
-    DATASET_DIRECTORY = './reddit-training-ready-to-share/'
+    DATASET_DIRECTORY = './'
     LABELS_FILENAME = 'risk_golden_truth.txt'
 
     # reading correct labels
@@ -279,15 +279,28 @@ if __name__ == "__main__":
                 if IMAGE_STR in post:
                     continue
                 post = re.sub(r"http\S+", "", post)
+                post = re.sub(r"\d+", "", post)
+                post = re.sub(r"\r", "", post)
+                post = re.sub(u"\\p{P}+", "", post)
                 individual += ' ' + post
         X.append(individual)        
 
+    # X_0 = X[0:25]
+    # X_1 = X[-25:]
+    # y_0 = y[0:25]
+    # y_1 = y[-25:]
+
+    # X = X_0 + X_1
+    # y = y_0 + y_1
     # random.Random(4).shuffle(X)
     # random.Random(4).shuffle(y)
 
     # X = X[0:50]
     # y = y[0:50]
     excluded_stop_words = {'i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves'}
+
+    class_weight_mapping = { '0': 1, '1': 3}
+    clf = SGDClassifier(class_weight=class_weight_mapping)
     model, secs = build_and_evaluate(X, y, excluded_stop_words=excluded_stop_words)
 
     print(show_most_informative_features(model))
