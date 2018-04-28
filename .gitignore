@@ -6,3 +6,4 @@ positive_examples_anonymous/*
 risk_golden_truth.txt
 tokenizer.py
 tokenizer2.py
+.ipynb_checkpoints/
