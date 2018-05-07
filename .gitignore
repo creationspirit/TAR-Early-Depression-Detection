@@ -1,8 +1,8 @@
 .vscode/
 __pycache__/
 index.py
-negative_examples_anonymous/*
-positive_examples_anonymous/*
+reddit-test-data-ready-to-share/*
+reddit-training-ready-to-share/*
 risk_golden_truth.txt
 tokenizer.py
 tokenizer2.py
