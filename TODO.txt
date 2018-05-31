@@ -1,0 +1,10 @@
+incremental classification
+ansambl?
+
+features:
+  lexicon size
+  prosjecna duljina recenica
+  prosjecna duljina rijeci
+  prosjecna duljina postova
+  broj postova (lowered social activity)
+  broj osobnih zamjenica me, myself itd. / ukupni broj rijeci
