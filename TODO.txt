@@ -2,6 +2,8 @@ incremental classification
 ansambl?
 
 features:
+  POS tags
+  sentiment rijeci (TextBlob sentiment)
   lexicon size
   prosjecna duljina recenica
   prosjecna duljina rijeci

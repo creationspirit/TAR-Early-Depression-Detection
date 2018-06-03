@@ -1,0 +1,34 @@
+Unigram
+Cross validation for positive label scores:
+	Average precision score:
+		 0.596333666334
+	Average recall score:
+		 0.770833333333
+	Average  F1 score:
+		 0.66584339637
+
+Cross validation for all label scores:
+	Average precision score:
+		 0.773367222743
+	Average recall score:
+		 0.829471544715
+	Average  F1 score:
+		 0.791669354766
+
+
+Unigram + 2hr intervals
+Cross validation for positive label scores:
+	Average precision score:
+		 0.586688866689
+	Average recall score:
+		 0.722222222222
+	Average  F1 score:
+		 0.642222222222
+
+Cross validation for all label scores:
+	Average precision score:
+		 0.763394227069
+	Average recall score:
+		 0.80641598916
+	Average  F1 score:
+		 0.778222103306
