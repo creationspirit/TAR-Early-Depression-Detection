@@ -2,11 +2,13 @@ incremental classification
 ansambl?
 
 features:
-  POS tags
-  sentiment rijeci (TextBlob sentiment)
-  lexicon size
-  prosjecna duljina recenica
+  - broj postova (lowered social activity)
+  - sentiment rijeci (TextBlob sentiment)
+  - prosjecna duljina recenica
+  - POS tags
+  - lexicon size
+  - prosjecna duljina postova
+  - post frequency
+  
   prosjecna duljina rijeci
-  prosjecna duljina postova
-  broj postova (lowered social activity)
   broj osobnih zamjenica me, myself itd. / ukupni broj rijeci
