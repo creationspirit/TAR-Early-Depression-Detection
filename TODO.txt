@@ -1,2 +1,17 @@
 incremental classification
 ansambl?
+<<<<<<< HEAD
+=======
+
+features:
+  - broj postova (lowered social activity)
+  - sentiment rijeci (TextBlob sentiment)
+  - prosjecna duljina recenica
+  - POS tags
+  - lexicon size
+  - prosjecna duljina postova
+  - post frequency
+  
+  prosjecna duljina rijeci
+  broj osobnih zamjenica me, myself itd. / ukupni broj rijeci
+>>>>>>> 84b8c7a51ff2d3732538279fb944d88b667c6587
