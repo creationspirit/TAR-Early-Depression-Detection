@@ -7,3 +7,8 @@ risk_golden_truth.txt
 tokenizer.py
 tokenizer2.py
 .ipynb_checkpoints/
+latex/tar-2018-paper-template.aux
+latex/tar-2018-paper-template.log
+latex/tar-2018-paper-template.pdf
+latex/tar-2018-paper-template.synctex.gz
+
