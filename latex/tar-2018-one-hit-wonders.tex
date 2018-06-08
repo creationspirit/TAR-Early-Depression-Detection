@@ -37,9 +37,87 @@ This section is the introduction to your paper. Introduction should not be too e
 
 This is the second paragraph of the introduction. In \LaTeX , paragraphs are separated by inserting an empty line in between them.  Avoid very large paragraphs (larger than half of the page height), but also avoid tiny paragraphs (e.g., one-sentence paragraphs).
 
-\section{Second section}
+\section{Related work}
 
-In scientific papers, this section usually (but not necessarily) briefly describes the related research and what makes the presented approach different from it.
+A lot of work has been done in development of quality tools for early depression detection and there are constant improvements in ways how to successfully handle that problem. Also a lot of psychology studies have been conducted to further explore thinking and language use of depressed individuals. 
+In the psychology study of \citep{rudeGortner2004} essays written by currently-depressed, formerly-depressed and never-depressed college students were examined and they showed that depressed students used negative valenced words and word "I" much more than non-depressed ones. In psychological research of \citep{mosaiwi} over 63 different Internet forums absolutist words were used as indicators for showing depression and that research showed that absolutist words are better indicators than negative emotion words.
+ 
+In area of developing tools and methods for early depression detection \citep{losada-crestani2016} proposed new methodology of collecting data in which they exploit the evolution of language use of depressed users by collecting reddit posts over a longer period of time. Also they introduced new evaluation metrics, ERDE measure, which is designed especially for detecting early signs of depression. In work of \citep{Trotzek2017LinguisticMA} different models (BOW models RNN, LSTM),  were employed for depression detection. Also in their work they used hand-crafted features beside standard document vectorization methods to improve evaluation results. Another work that concentrates on feature engineering is \citep{icpram18} where they used stylometric and morphology features with standard document vectorization methods and showed that additional features have an impact on improving evaluation scores.
+In work of \citep{empath2016} text analysis tool called Empath was developed which can generate and validate new lexical categories on demand. Also Empath enables text analysis across 200 built-in, pre-validated categories generated from common topics in web dataset. 
+It is also worth noting different approach of \citep{E17-1015} where they used deep learning, i.e. multitask learning and achieved improvement in evaluation over baselines and single-task models in predicting mental health conditions.
+
+For the purpose of encouraging further development of tools and methods for early risk detection, which includes early deppression detection, eRisk was founded \citep{LosadaCLEF2017}. Its main goal is to explore issues of evaluation methodology, effectiveness metrics and other processes related to early risk detection.
+In this paper, we will examine efectiveness of tf-idf document vectorization with some our additional features that were made by exploiting all the previous knowledge of psychological studies on depressed people and by using Empath. Dataset that will be used are Reddit posts and beside standard evaluation metric (Recall, Precision and F1 measure) we will also evaluate our model on ERDE measure.
+
+\section{Dataset}
+For training and testing we used dataset that consists of Reddit posts collected by \citep{losada-crestani2016}. Dataset contains posts collected from 892 users.  It consists of 137 depressed users and 755 non-depressed users and it is split into 486 users for training set (83 depressed and 403 non- depressed) and 406 users for test set (54 depressed and 352 non-depressed). Some additional informations abut dataset are shown in Table 1.
+
+\begin{table*}[]
+\centering
+\caption{Main statistics of the train and test collections \protect\citep{LosadaCLEF2017}}
+\label{tab:wide-table}
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+                                               & \multicolumn{2}{c}{\begin{tabular}[c]{@{}c@{}}Training\\ Depressed  Control\end{tabular}} & \multicolumn{2}{c}{\begin{tabular}[c]{@{}c@{}}Test\\ Depressed  Control\end{tabular}} \\ \midrule
+Users                                          & 83                                          & 483                                         & 54                                        & 352                                       \\
+Avg num. of submissions (post \& comments)     & 30,851                                      & 264,172                                     & 18,706                                    & 217,665                                   \\
+Avg num. of submissions per subject            & 371.7                                       & 655.5                                       & 359.7                                     & 623.7                                     \\
+Avg num. of days from first to last submission & 572.7                                       & 626.6                                       & 608.31                                    & 623.2                                     \\
+Avg num. of words per submission               & 27.6                                        & 21.3                                        & 26.9                                      & 22.5                                      \\ \bottomrule
+\end{tabular}
+\end{center}
+\end{table*}
+
+Dataset is created as sequence of XML files, one file per user. Each XML file stores the sequence of the users' submissions (one entry per submission). For most active users there are up to 2000 submissions (1000 posts and 1000 comments) and those submissions include submission to any subreddit category. Every submission in XML file is represented with submission's title, the submission's text and the submission's date. Also posts in every XML file are ordered chronologically for every user. This dataset is specific because it does not only allow us to find differences in language use between depressed and non-depressed users but it also allows us to see evolution of language use in of depressed users during a longer period of time.
+
+\section{Baseline experiments}
+
+We devised two simple baseline classification models following the baseline experiments done in \citep{losada-crestani2016}. The \textit{bag-of-words} approach was taken for feature extraction. For each user, all post were read sequentially and from each post the contents of tags \textit{TITLE} and \textit{TEXT} were extracted and concatenated together????stopwords excluded????. Other tags do not have information suitable for this task. The resulting document for each user was a concatenated string containing all their post titles and texts. We encountered problems with this approach as data is raw and often titles and text contain noise such as links, titles from a different source or even encoded images. We made best effort multiple regular expressions to extract and remove this noise from data so that our final concatenated document contains only text written by user. We made a proposition to use links as a metadata and extract a feature addressing an intuitive question: "What kind of links does a depressed person post?" but due too link string ambiguity and little information about content that can be taken from it we concluded it was to complex task. Final, cleaned document of a user was then tokenized and stems were generated for each token with a Snowball stemmer???(fusnota)??? As a last step we made a \textit{tf-idf} vectorized representation of cleaned, tokenized and stemmed document.
+
+Following example of \citep{losada-crestani2016} classification was done by logistic regression model with L1 regularization and also, the SVM classifier was used with linear kernel to asses difference in performance. This dataset contains 755 users in control group and only 137 users labeled as depressed so it is extremely unbalanced classification problem. To address this issue and avoid building a trivial classifier that classifies everything as not depressed we adjust misclassification costs by giving weights to classes. Class weight is inversely proportional to class frequencies in the input data and is calculated by equation equation \eqref{eq:class-weight} ????heuristika referenca??????
+
+\begin{equation}\label{eq:class-weight}
+w_i = n_s / (n_c * c_i)
+\end{equation}
+
+where $n_s$ is number of samples in a dataset, $n_c$ number of classes and $c_i$ is number of samples labeled as class $i$ in the dataset.
+
+Both baseline models where optimized for optimum performance with standard grid search of two hyperparameters: $k$ - number of k-best features to retain, calculated by a ${\chi}^2$ distribution and $C$ - a regularization factor. Each combination was evaluated by 4-fold cross validation on training set optimizing for F1 score of minority class. Cross validation process gave following optimal values $k = 1500$ for both models and $C = 32$ for Logistic Regression and $C = 4$ for SVM.
+
+\section{Linguistic metadata features}
+
+Next step we took was attempt at modeling the existing knowledge \citep{mosaiwi, rudeGortner2004, icpram18, empath2016} about language use of depressed individuals as extra features that we later added to our baseline models. In addition to those features, we added several features that were based on our intuition about this classification problem. There was total of 13 new features. In further part of this chapter we list and explain all of the extra features.
+\\
+
+\textbf{Semantic feature set:}
+In \citep{LosadaCLEF2017} analysis of emotions and topics with lexicons like LIWC???fusnota??? is advised, as it is deemed beneficial for depression detection. In addition to this, \citep{mosaiwi} uses LIWC topic analysis in research of connection between absolutist words and depression. ?????DALJE????
+\\
+
+
+\textbf{Pronoun frequency:}
+There is confirmed correlation of elevated use of first-person pronouns and depression diagnosis \cite{KARMEN201527}. In contrast, there is also correlated reduced usage of other pronouns. This reflects the phenomenon that depressed individuals are often focused on themselves and much less on others. We devised two features. One that calculates first-person pronoun frequency and the other that calculates other pronoun frequency for each user. Frequency is calculated as number of pronouns in document divided by number of words. ???list????
+\\
+
+\textbf{Absolutisms frequency:}
+Absolutist thinking is considered a cognitive distortion by most cognitive therapies for anxiety and depression \citep{mosaiwi}. The research \cite{mosaiwi} found that absolutist words tracked the severity of affective disorder forums more faithfully than negative emotion words. We use a list of absolutist words from this paper, augmented by several other, to devise a feature in a same way as pronoun frequency - as number of absolutist words divided by total number of words in a document.
+\\
+
+\textbf{Part-of-speech tags:}
+We follow the example of \cite{icpram18, LosadaCLEF2017} to incorporate part-of-speech tag information into our model. They use this information with presumption that depressed individuals use certain part-of-speech more. We use NLTK POS-tagger to count 21 different tags. ????which ones???? Again, counters are divided by total number of words to get frequencies of each tag. Each tag is a new individual feature.
+\\
+
+\textbf{Sentiment and subjectivity:}
+Negative emotion in is often sign of depression or anxiety \citep{mosaiwi}. We use TextBlob Python library ????fusnota???? to extract sentiment and subjectivity information. Library API contains a function that gives polarity $[-1.0, 1.0]$ and subjectivity $[0.0, 1.0]$ score for each sentence. We use this to devise two features as polarity (sentiment) and subjectivity average across whole document. 
+\\
+
+\textbf{Lexicon size:}
+This feature is calculated as total number of different words divided by total number of words in a document. This feature is similar to a set of features (Gunning Fog Index, Flesch Reading Ease, Linsear Write Formula and New Dale-Chall Readability) proposed in \cite{losada-crestani2016} in a way that it stores information about language complexity which can be connected to depression.
+\\
+
+\textbf{Other:}
+These 5 additional metadata features were devised on intuitive presumption they can improve our models. Their impact was tested in evaluation process. These features include: average posting time of day (in 3-hour intervals), average sentence length, average post length, post count and post frequency.????anything else?????
+\\
 
 \subsection{First subsection}
 \label{sec:first}

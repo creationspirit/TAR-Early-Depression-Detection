@@ -1,0 +1,36 @@
+Voting Baseline (threshold = 0.50)
+  Global ERDE (with o = 5): 12.0530 %
+  F1: 0.5915
+  Precision: 0.4773
+  Recall: 0.7778
+
+  Global ERDE (with o = 50): 7.1719 %
+  F1: 0.5915
+  Precision: 0.4773
+  Recall: 0.7778
+
+-------------------------------------
+
+LR Baseline (threshold = 0.50)
+  Global ERDE (with o = 5): 12.2705 %
+  F1: 0.5111
+  Precision: 0.3651
+  Recall: 0.8519
+
+  Global ERDE (with o = 50): 7.5008 %
+  F1: 0.5111
+  Precision: 0.3651
+  Recall: 0.8519
+
+-------------------------------------
+
+SVM Baseline (threshold = 0.50)
+  Global ERDE (with o = 5): 11.7998 %
+  F1: 0.5739
+  Precision: 0.5410
+  Recall: 0.6111
+
+  Global ERDE (with o = 50): 7.8100 %
+  F1: 0.5739
+  Precision: 0.5410
+  Recall: 0.6111
